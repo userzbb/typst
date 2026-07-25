@@ -27,14 +27,14 @@
 //   构造：oklch(l, c, h, alpha)
 #let inv(c, max-light: 0.92) = {
   let p = oklch(c).components(alpha: true)
-  // flipped = 1 - L（对称翻转后的亮度，0~1 纯数字）
-  // components() 返回的是 ratio，除以 100% 得到纯数
-  let flipped = (100% - p.at(0)) / 100%
-  // 二次曲线：y = a*x² + b*x
-  // 由 (0,0), (0.5,0.5), (1,max-light) 三点拟合
+  let l = p.at(0) / 100%
+  // flipped = 对称翻转亮度
+  let flipped = 1 - l
+  // 二次曲线压缩亮度（白→纯黑，黑→max-light）
   let a = 2 * max-light - 2
   let b = 2 - max-light
   let new-l = a * flipped * flipped + b * flipped
+  // chroma 保持原样（色彩更明显，接近 tinymist 效果）
   oklch(new-l * 100%, p.at(1), p.at(2), p.at(3))
 }
 

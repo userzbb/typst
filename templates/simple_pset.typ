@@ -1,5 +1,5 @@
 #import "@preview/stux-assignment:0.1.0": *
-#import "/templates/dark_mode.typ":*
+#import "/templates/Components/dark_mode.typ": **
 #show: dark_mode
 #_theme-state.update((
   bg: rgb("#02121d"), // 題目框內部也是純黑，保持像素熄滅

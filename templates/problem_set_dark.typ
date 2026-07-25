@@ -14,7 +14,7 @@
 #import "problem_set.typ": style_apply as _base-style
 
 // 深色模式
-#import "dark_mode.typ": dark_mode, inv
+#import "Components/dark_mode.typ": dark_mode, inv
 
 // ============================================================
 // axiomst 函数的深色版本
@@ -28,9 +28,9 @@
 // 颜色无关函数直接转发
 #import "@preview/axiomst:0.2.1": *
 
-// 默认暗色配色：取 axiomst 浅色方案 → inv() 翻转 → 暗色
-#let _dark-fill(c) = inv(c.lighten(95%))   // body 背景
-#let _dark-title(c) = inv(c.lighten(85%))  // 标题栏背景
+// 暗色配色：轻度提亮再 inv，保留色彩但不过曝
+#let _dark-fill(c) = inv(c.lighten(80%))   // body 背景（微亮→暗但有色彩）
+#let _dark-title(c) = inv(c.lighten(60%))  // 标题栏（比 body 更亮一点）
 #let _dark-stroke(c) = inv(c.darken(10%))  // 边框
 
 // 暗色 theorem-base（直写，不调 axi.theorem-base）

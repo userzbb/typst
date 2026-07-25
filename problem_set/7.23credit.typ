@@ -1,4 +1,5 @@
 #import "../templates/problem_set_dark.typ": *
+// #import "../templates/Components/dark_mode.typ":*
 #import emoji: flags
 #show: style_apply
 
@@ -29,12 +30,14 @@
 
 ]
 
-
+#lemma()[
+  dasdasddasd
+]
 
 
 密码是$abs(P_1+P_2)$的前四位有效数字
 
 
-
+dasd
 
 
