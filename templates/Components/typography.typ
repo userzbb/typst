@@ -2,7 +2,7 @@
 // typography.typ — 排版设置（字体/页边距/段落等）
 #let style_apply(body) = {
   set page(
-    "a3",
+    "a4",
     margin: (top: 1%, rest: 5%),
   )
 

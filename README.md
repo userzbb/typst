@@ -8,7 +8,7 @@
 ├── problem_set/              # 题集源文件
 │   └── 7.23credit.typ        # 示例文档
 ├── templates/                # 模板
-│   ├── problem_set_dark.typ  # 主模板（深色 + 浅色切换）
+│   ├── problem_set.typ           # 主模板（深色/浅色一键切换）
 │   ├── simple_pset.typ       # 简单模板（无 axiomst）
 │   └── Components/           # 核心组件
 │       ├── typography.typ    # 排版设置（字体/页边距/段距）
@@ -22,7 +22,7 @@
 ### 新建文档（推荐）
 
 ```typst
-#import "../templates/problem_set_dark.typ": *
+#import "../templates/problem_set.typ": *
 
 #show: style_apply        // 深色模式（默认）
 // #show: style_apply_light  // 浅色模式
