@@ -21,7 +21,8 @@
   set par(
     justify: true,
     leading: 0.75em,
-    first-line-indent: (amount: 2em, all: true),
+    first-line-indent: (amount: 1em, all: true),
+    hanging-indent: 1em,
   )
 
   show raw: set text(font: (
