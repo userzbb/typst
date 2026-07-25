@@ -53,7 +53,7 @@
   example-gap: 0.9em,
   remark-gap: 1em,
   // ── 解答显示 ──
-  show-solutions: true,
+  show-solutions: false,
 )
 
 = 测试 1：浅色模式 - 全组件默认渲染
@@ -138,4 +138,19 @@
 
 #problem(title: "", numbered: false)[
   这是一个没有编号的题目。
+]
+
+---
+
+= 测试 4：解答显示控制（show-solutions: false）
+
+顶部配置了 `show-solutions: false`，本文档所有 solution 均不渲染。
+上方测试 1 的 solution 已被隐藏，以下也不会显示：
+
+#problem(title: "解答隐藏测试")[
+  这个题目的 solution 应该不可见。
+]
+
+#solution[
+  ✗ 如果你能看到这段文字，说明 show-solutions: false 没生效。
 ]

@@ -139,3 +139,17 @@
 #problem(title: "", numbered: false)[
   这是一个没有编号的题目。
 ]
+
+---
+
+= 测试 4：解答显示控制（show-solutions: true）
+
+顶部配置了 `show-solutions: true`，以下 solution 正常显示。
+
+#problem(title: "解答显示测试")[
+  这个题目的 solution 应该可见。
+]
+
+#solution[
+  ✓ 你能看到这段解答，说明 show-solutions: true 生效了。
+]

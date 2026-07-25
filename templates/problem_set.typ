@@ -281,8 +281,22 @@
   v(t.gap)
 }
 
-// Solution
-#let solution(body) = axi.solution(body)
+// Solution（自建，读 _cfg 控制显隐，暗色/浅色自适应）
+#let solution(body) = context {
+  let dark = _is-dark.get()
+  let visible = _or(_cfg.get(), "show-solutions", true)
+  if visible {
+    v(0.5em)
+    block(
+      width: 100%,
+      breakable: true,
+    )[
+      #text(fill: _txt(dark), weight: "bold")[Solution:]
+      #v(0.3em)
+      #body
+    ]
+  }
+}
 
 // Theorem
 #let theorem(
@@ -595,10 +609,8 @@
   example-gap: auto,
   remark-gap: auto,
 ) = {
-  if show-solutions != auto {
-    show-solutions-state.update(show-solutions)
-  }
   let ov = (:)
+  if show-solutions != auto { ov.insert("show-solutions", show-solutions) }
   if fill-l != auto { ov.insert("fill-l", fill-l) }
   if title-l != auto { ov.insert("title-l", title-l) }
   if stroke-d != auto { ov.insert("stroke-d", stroke-d) }
