@@ -27,8 +27,9 @@
 #let _g-title = 60    // 标题栏淡度（%）
 #let _g-stroke = 10   // 边框深度（%）
 #let _g-color = blue.darken(20%)  // 默认主题色
-#let _g-radius = 4pt  // 圆角
-#let _g-inset = 0.6em // 内边距
+#let _g-radius = 10%  // 圆角
+#let _g-inset-x = 0em // 内边距——左右
+#let _g-inset-y = 1em  // 内边距——上下
 
 #let _theme = (
   problem: (
@@ -131,7 +132,7 @@
       fill: _dark-fill(theme),
       radius: _g-radius,
       stroke: _dark-stroke(theme),
-      inset: _g-inset,
+      inset: (x: _g-inset-x, y: _g-inset-y),
     )[
       #text(fill: inv(black), weight: "bold")[#prefix #if numbered { number }]
       #if title != none [#text(fill: inv(black), style: "italic")[#title].]
@@ -155,6 +156,8 @@
   title-l: auto,
   stroke-d: auto,
   gap: auto,
+  inset-x: auto,
+  inset-y: auto,
   body,
 ) = context {
   if _is-dark.get() {
@@ -166,6 +169,8 @@
       stroke-d: stroke-d,
       gap: gap,
     )
+    let ix = if inset-x == auto { _g-inset-x } else { inset-x }
+    let iy = if inset-y == auto { _g-inset-y } else { inset-y }
     if numbered {
       [== Problem #axi.problem-counter.step() #context axi.problem-counter.display()]
     }
@@ -174,6 +179,7 @@
         border-color: _dark-stroke(t),
         title-color: _dark-title(t),
         body-color: _dark-fill(t),
+        body-inset: (x: ix, y: iy),
       ),
       title-style: (color: inv(black), weight: "bold"),
       breakable: true,
