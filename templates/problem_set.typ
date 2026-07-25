@@ -1,7 +1,5 @@
-// problem_set_dark.typ — axiomst 深色模板，含浅色一键切换
-// 用法： #import "../templates/problem_set_dark.typ": *
-//        #show: style_apply        // 深色
-//        #show: style_apply_light  // 浅色
+// problem_set.typ — 题集核心组件。
+// 文档里推荐导入 problem_set_dark.typ 或 problem_set_light.typ。
 
 // 基础模板：导入原始 style_apply 作为 _base
 #import "Components/typography.typ": style_apply as _base-style
@@ -705,6 +703,9 @@
 #let style_apply(
   body,
   show-solutions: auto,
+  page-paper: "a4",
+  page-margin: (top: 1%, rest: 5%),
+  text-size: 12pt,
   fill-l: auto,
   fill-l-dark: auto,
   fill-l-light: auto,
@@ -811,12 +812,20 @@
     remark-gap: remark-gap,
   )
   _is-dark.update(true)
-  dark_mode(_base-style(body))
+  dark_mode(_base-style(
+    body,
+    page-paper: page-paper,
+    page-margin: page-margin,
+    text-size: text-size,
+  ))
 }
 
 #let style_apply_light(
   body,
   show-solutions: auto,
+  page-paper: "a4",
+  page-margin: (top: 1%, rest: 5%),
+  text-size: 12pt,
   fill-l: auto,
   fill-l-dark: auto,
   fill-l-light: auto,
@@ -923,5 +932,10 @@
     remark-gap: remark-gap,
   )
   _is-dark.update(false)
-  _base-style(body)
+  _base-style(
+    body,
+    page-paper: page-paper,
+    page-margin: page-margin,
+    text-size: text-size,
+  )
 }
