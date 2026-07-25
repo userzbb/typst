@@ -1,9 +1,8 @@
 
-#import "@preview/axiomst:0.2.1": *
-
+// typography.typ — 排版设置（字体/页边距/段落等）
 #let style_apply(body) = {
   set page(
-    "a4",
+    "a3",
     margin: (top: 1%, rest: 5%),
   )
 

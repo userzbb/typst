@@ -1,17 +1,10 @@
-// problem_set_dark.typ — axiomst + dark_mode 集成
-// 直接 import 这个文件替代 problem_set.typ 即可
-//
-// 用法：
-//   #import "../templates/problem_set_dark.typ": *
-//   #show: style_apply
-//   #show: dark_mode
-//
-// 原理：axiomst 的所有彩色框（problem/theorem/definition 等）
-// 的 fill/stroke 都是从 color 参数派生的，只需把 color 换成
-// 翻转后的值，所有派生颜色自动正确。
+// problem_set_dark.typ — axiomst 深色模板，含浅色一键切换
+// 用法： #import "../templates/problem_set_dark.typ": *
+//        #show: style_apply        // 深色
+//        #show: style_apply_light  // 浅色
 
 // 基础模板：导入原始 style_apply 作为 _base
-#import "problem_set.typ": style_apply as _base-style
+#import "Components/typography.typ": style_apply as _base-style
 
 // 深色模式
 #import "Components/dark_mode.typ": dark_mode, inv
@@ -28,152 +21,474 @@
 // 颜色无关函数直接转发
 #import "@preview/axiomst:0.2.1": *
 
-// 暗色配色：轻度提亮再 inv，保留色彩但不过曝
-#let _dark-fill(c) = inv(c.lighten(80%))   // body 背景（微亮→暗但有色彩）
-#let _dark-title(c) = inv(c.lighten(60%))  // 标题栏（比 body 更亮一点）
-#let _dark-stroke(c) = inv(c.darken(10%))  // 边框
+// ============================================================
+// 🎨 配色 & 布局面板
+#let _g-fill = 80     // body 淡度（%）
+#let _g-title = 60    // 标题栏淡度（%）
+#let _g-stroke = 10   // 边框深度（%）
+#let _g-color = blue.darken(20%)  // 默认主题色
+#let _g-radius = 4pt  // 圆角
+#let _g-inset = 0.6em // 内边距
+
+#let _theme = (
+  problem: (
+    color: _g-color,
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 1em,
+  ),
+  theorem: (
+    color: _g-color,
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 0.8em,
+  ),
+  lemma: (
+    color: green.darken(20%),
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 0.8em,
+  ),
+  definition: (
+    color: purple.darken(20%),
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 0.8em,
+  ),
+  proposition: (
+    color: red.darken(20%),
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 0.8em,
+  ),
+  corollary: (
+    color: orange.darken(20%),
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 0.8em,
+  ),
+  example: (
+    color: aqua.darken(20%),
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 0.8em,
+  ),
+  remark: (
+    color: gray.darken(20%),
+    fill-l: _g-fill,
+    title-l: _g-title,
+    stroke-d: _g-stroke,
+    gap: 0.8em,
+  ),
+)
+
+// 从面板取主题，允许外部覆盖 color/fill-l/title-l/stroke-d
+#let _theme-for(
+  name,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+) = {
+  let t = _theme.at(name)
+  if color == auto { color = t.color }
+  if fill-l == auto { fill-l = t.fill-l }
+  if title-l == auto { title-l = t.title-l }
+  if stroke-d == auto { stroke-d = t.stroke-d }
+  if gap == auto { gap = t.gap }
+  (color: color, fill-l: fill-l, title-l: title-l, stroke-d: stroke-d, gap: gap)
+}
+
+// 根据主题参数计算最终暗色
+#let _dark-fill(t) = inv(t.color.lighten(t.fill-l * 1%))
+#let _dark-title(t) = inv(t.color.lighten(t.title-l * 1%))
+#let _dark-stroke(t) = inv(t.color.darken(t.stroke-d * 1%))
 
 // 暗色 theorem-base（直写，不调 axi.theorem-base）
 #let _dark-theorem-base(
   ctr,
   prefix,
+  theme,
   title: none,
   numbered: true,
-  color: blue.darken(20%),
   body,
 ) = context {
   let number = if numbered {
     ctr.step()
     context ctr.display()
   }
-  block(
-    width: 100%,
-    fill: _dark-fill(color),
-    radius: 4pt,
-    stroke: _dark-stroke(color),
-    inset: 0.6em,
-  )[
-    #text(fill: inv(black), weight: "bold")[#prefix #if numbered { number }]
-    #if title != none [#text(fill: inv(black), style: "italic")[#title].]
-    #v(0.5em)
-    #body
-  ]
+  (
+    block(
+      width: 100%,
+      fill: _dark-fill(theme),
+      radius: _g-radius,
+      stroke: _dark-stroke(theme),
+      inset: _g-inset,
+    )[
+      #text(fill: inv(black), weight: "bold")[#prefix #if numbered { number }]
+      #if title != none [#text(fill: inv(black), style: "italic")[#title].]
+      #v(0.5em)
+      #body
+    ]
+      + v(theme.gap)
+  )
 }
+}
+
+// ⚡ 暗色模式开关
+#let _is-dark = state("_pset-dark-mode", true)
 
 // Problem（直调 showybox，暗色配色）
 #let problem(
   title: "",
-  color: blue.darken(20%),
   numbered: true,
-  ..body,
-) = {
-  if numbered {
-    [== Problem #axi.problem-counter.step() #context axi.problem-counter.display()]
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    let t = _theme-for(
+      "problem",
+      color: color,
+      fill-l: fill-l,
+      title-l: title-l,
+      stroke-d: stroke-d,
+      gap: gap,
+    )
+    if numbered {
+      [== Problem #axi.problem-counter.step() #context axi.problem-counter.display()]
+    }
+    showybox(
+      frame: (
+        border-color: _dark-stroke(t),
+        title-color: _dark-title(t),
+        body-color: _dark-fill(t),
+      ),
+      title-style: (color: inv(black), weight: "bold"),
+      breakable: true,
+      title: title,
+      body,
+    )
+    v(t.gap)
+  } else {
+    axi.problem(title: title, numbered: numbered, body)
   }
-  showybox(
-    frame: (
-      border-color: _dark-stroke(color),
-      title-color: _dark-title(color),
-      body-color: _dark-fill(color),
-    ),
-    title-style: (
-      color: inv(black),
-      weight: "bold",
-    ),
-    breakable: true,
-    title: title,
-    ..body,
-  )
 }
 
 // Solution
 #let solution(body) = axi.solution(body)
 
 // Theorem
-#let theorem(title: none, numbered: true, color: blue.darken(20%), body) = {
-  _dark-theorem-base(
-    axi.theorem-counter,
-    "Theorem",
-    title: title,
-    numbered: numbered,
-    color: color,
-    body,
-  )
+#let theorem(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    _dark-theorem-base(
+      axi.theorem-counter,
+      "Theorem",
+      _theme-for(
+        "theorem",
+        color: color,
+        fill-l: fill-l,
+        title-l: title-l,
+        stroke-d: stroke-d,
+        gap: gap,
+      ),
+      title: title,
+      numbered: numbered,
+      body,
+    )
+  } else {
+    axi.theorem(title: title, numbered: numbered, body)
+  }
 }
 
-// Lemma
-#let lemma(title: none, numbered: true, color: green.darken(20%), body) = {
-  _dark-theorem-base(
-    axi.lemma-counter,
-    "Lemma",
-    title: title,
-    numbered: numbered,
-    color: color,
-    body,
-  )
+#let lemma(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    _dark-theorem-base(
+      axi.lemma-counter,
+      "Lemma",
+      _theme-for(
+        "lemma",
+        color: color,
+        fill-l: fill-l,
+        title-l: title-l,
+        stroke-d: stroke-d,
+        gap: gap,
+      ),
+      title: title,
+      numbered: numbered,
+      body,
+    )
+  } else {
+    axi.lemma(title: title, numbered: numbered, body)
+  }
 }
 
-// Definition
 #let definition(
   title: none,
   numbered: true,
-  color: purple.darken(20%),
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    _dark-theorem-base(
+      axi.definition-counter,
+      "Definition",
+      _theme-for(
+        "definition",
+        color: color,
+        fill-l: fill-l,
+        title-l: title-l,
+        stroke-d: stroke-d,
+        gap: gap,
+      ),
+      title: title,
+      numbered: numbered,
+      body,
+    )
+  } else {
+    axi.definition(title: title, numbered: numbered, body)
+  }
+}
+
+#let proposition(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    _dark-theorem-base(
+      axi.proposition-counter,
+      "Proposition",
+      _theme-for(
+        "proposition",
+        color: color,
+        fill-l: fill-l,
+        title-l: title-l,
+        stroke-d: stroke-d,
+        gap: gap,
+      ),
+      title: title,
+      numbered: numbered,
+      body,
+    )
+  } else {
+    axi.proposition(title: title, numbered: numbered, body)
+  }
+}
+
+#let corollary(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    _dark-theorem-base(
+      axi.corollary-counter,
+      "Corollary",
+      _theme-for(
+        "corollary",
+        color: color,
+        fill-l: fill-l,
+        title-l: title-l,
+        stroke-d: stroke-d,
+        gap: gap,
+      ),
+      title: title,
+      numbered: numbered,
+      body,
+    )
+  } else {
+    axi.corollary(title: title, numbered: numbered, body)
+  }
+}
+
+#let example(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    _dark-theorem-base(
+      axi.example-counter,
+      "Example",
+      _theme-for(
+        "example",
+        color: color,
+        fill-l: fill-l,
+        title-l: title-l,
+        stroke-d: stroke-d,
+        gap: gap,
+      ),
+      title: title,
+      numbered: numbered,
+      body,
+    )
+  } else {
+    axi.example(title: title, numbered: numbered, body)
+  }
+}
+
+#let remark(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  gap: auto,
+  body,
+) = context {
+  if _is-dark.get() {
+    _dark-theorem-base(
+      axi.definition-counter,
+      "Remark",
+      _theme-for(
+        "remark",
+        color: color,
+        fill-l: fill-l,
+        title-l: title-l,
+        stroke-d: stroke-d,
+        gap: gap,
+      ),
+      title: title,
+      numbered: numbered,
+      body,
+    )
+  } else {
+    axi.remark(title: title, numbered: numbered, body)
+  }
+}
+"proposition",
+color: color,
+fill-l: fill-l,
+title-l: title-l,
+stroke-d: stroke-d,
+),
+title: title,
+numbered: numbered,
+body,
+)
+}
+
+#let corollary(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  body,
+) = {
+  _dark-theorem-base(
+    axi.corollary-counter,
+    "Corollary",
+    _theme-for(
+      "corollary",
+      color: color,
+      fill-l: fill-l,
+      title-l: title-l,
+      stroke-d: stroke-d,
+    ),
+    title: title,
+    numbered: numbered,
+    body,
+  )
+}
+
+#let example(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
+  body,
+) = {
+  _dark-theorem-base(
+    axi.example-counter,
+    "Example",
+    _theme-for(
+      "example",
+      color: color,
+      fill-l: fill-l,
+      title-l: title-l,
+      stroke-d: stroke-d,
+    ),
+    title: title,
+    numbered: numbered,
+    body,
+  )
+}
+
+#let remark(
+  title: none,
+  numbered: true,
+  color: auto,
+  fill-l: auto,
+  title-l: auto,
+  stroke-d: auto,
   body,
 ) = {
   _dark-theorem-base(
     axi.definition-counter,
-    "Definition",
-    title: title,
-    numbered: numbered,
-    color: color,
-    body,
-  )
-}
-
-// Proposition
-#let proposition(title: none, numbered: true, color: red.darken(20%), body) = {
-  _dark-theorem-base(
-    axi.proposition-counter,
-    "Proposition",
-    title: title,
-    numbered: numbered,
-    color: color,
-    body,
-  )
-}
-
-// Corollary
-#let corollary(title: none, numbered: true, color: orange.darken(20%), body) = {
-  _dark-theorem-base(
-    axi.corollary-counter,
-    "Corollary",
-    title: title,
-    numbered: numbered,
-    color: color,
-    body,
-  )
-}
-
-// Example
-#let example(title: none, numbered: true, color: aqua.darken(20%), body) = {
-  _dark-theorem-base(
-    axi.example-counter,
-    "Example",
-    title: title,
-    numbered: numbered,
-    color: color,
-    body,
-  )
-}
-
-// Remark
-#let remark(title: none, numbered: true, color: gray.darken(20%), body) = {
-  _dark-theorem-base(
-    axi.definition-counter,
     "Remark",
+    _theme-for(
+      "remark",
+      color: color,
+      fill-l: fill-l,
+      title-l: title-l,
+      stroke-d: stroke-d,
+    ),
     title: title,
     numbered: numbered,
-    color: color,
     body,
   )
 }
@@ -207,7 +522,12 @@
 #let uncover = axi.uncover
 #let theorem-base = axi.theorem-base
 
-// style_apply = 原始版 + dark_mode，自动开启深色模式
+// ⚡ 暗色模式开关
 #let style_apply(body) = {
+  _is-dark.update(true)
   dark_mode(_base-style(body))
+}
+#let style_apply_light(body) = {
+  _is-dark.update(false)
+  _base-style(body)
 }

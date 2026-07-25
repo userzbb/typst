@@ -1,2 +1,4 @@
 *.pdf
 *.json
+target/
+problem_set/
