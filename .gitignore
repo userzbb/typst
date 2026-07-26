@@ -1,4 +1,16 @@
-*.pdf
-*.json
+# Build outputs
 target/
-problem_set/
+*.pdf
+
+# Local Typst binary copied into the project for verification
+/typst.exe
+
+# Typst local package/cache directories, if created in the repo
+/.typst/
+/typst-packages/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+*.tmp
+*.log

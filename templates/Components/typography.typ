@@ -1,9 +1,14 @@
 
 // typography.typ — 排版设置（字体/页边距/段落等）
-#let style_apply(body) = {
+#let style_apply(
+  body,
+  page-paper: "a4",
+  page-margin: (top: 1%, rest: 5%),
+  text-size: 12pt,
+) = {
   set page(
-    "a4",
-    margin: (top: 1%, rest: 5%),
+    page-paper,
+    margin: page-margin,
   )
 
   set text(
@@ -13,7 +18,7 @@
     ),
     lang: "zh",
     region: "cn",
-    size: 12pt,
+    size: text-size,
   )
 
   set text(top-edge: "ascender", bottom-edge: "descender")

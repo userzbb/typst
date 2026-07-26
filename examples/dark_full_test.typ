@@ -1,58 +1,36 @@
-#import "../templates/problem_set.typ": *
+#import "../templates/problem_set_dark.typ": *
 
 // ╔══════════════════════════════════════════════════════════╗
 // ║  全量示例：所有组件 + 所有参数（深色模式）                    ║
 // ╚══════════════════════════════════════════════════════════╝
 
 #show: style_apply.with(
-  // ── 透明度：共享 ──
-  fill-l: 82,
-  title-l: 62,
-  stroke-d: 12,
-  // ── 透明度：模式专属（优先于共享）──
-  fill-l-dark: 78,
-  fill-l-light: 96,
-  title-l-dark: 58,
-  title-l-light: 88,
-  stroke-d-dark: 15,
-  stroke-d-light: 8,
-  // ── 颜色：共享 ──
-  problem-color: blue.darken(10%),
-  theorem-color: blue.darken(20%),
-  lemma-color: green.darken(20%),
-  definition-color: purple.darken(20%),
-  proposition-color: red.darken(20%),
-  corollary-color: orange.darken(20%),
-  example-color: aqua.darken(20%),
-  remark-color: gray.darken(20%),
-  // ── 颜色：模式专属（优先于共享）──
-  theorem-color-dark: teal.darken(15%),
-  theorem-color-light: teal,
-  lemma-color-dark: green.darken(30%),
-  lemma-color-light: green,
-  definition-color-dark: purple.darken(30%),
-  definition-color-light: purple,
-  // ── 圆角：共享 + 模式专属 ──
-  radius: 8%,
-  radius-dark: 12%,
-  radius-light: 4pt,
-  // ── 内边距：共享 + 模式专属 ──
-  inset-x: 0.5em,
-  inset-y: 0.8em,
-  inset-x-dark: 0.8em,
-  inset-x-light: 0.6em,
-  inset-y-dark: 1.2em,
-  inset-y-light: 0.6em,
-  // ── 每块独立间距 ──
-  problem-gap: 2em,
-  theorem-gap: 1.5em,
-  lemma-gap: 1.2em,
-  definition-gap: 1em,
-  proposition-gap: 0.9em,
-  corollary-gap: 0.9em,
-  example-gap: 0.9em,
-  remark-gap: 1em,
-  // ── 解答显示 ──
+  page-margin: (top: 1%, rest: 5%),
+  block-radius: 12%,
+  block-inset: (x: 0.8em, y: 1.2em),
+  fill-l: 78,
+  title-l: 58,
+  stroke-d: 15,
+  colors: (
+    problem: blue.darken(10%),
+    theorem: teal.darken(15%),
+    lemma: green.darken(30%),
+    definition: purple.darken(30%),
+    proposition: red.darken(20%),
+    corollary: orange.darken(20%),
+    example: aqua.darken(20%),
+    remark: gray.darken(20%),
+  ),
+  gaps: (
+    problem: 2em,
+    theorem: 1.5em,
+    lemma: 1.2em,
+    definition: 1em,
+    proposition: 0.9em,
+    corollary: 0.9em,
+    example: 0.9em,
+    remark: 1em,
+  ),
   show-solutions: true,
 )
 
